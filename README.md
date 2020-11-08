@@ -11,25 +11,25 @@ So-Pekocko API est une api backend qui permet de:
  ## Comment utiliser cette API?
   clonner cet repository :
       
-      - git clone https://github.com/abdelhakhamdouni/abdelhak_hamdouni_P6_03082020.git/
+      git clone https://github.com/abdelhakhamdouni/abdelhak_hamdouni_P6_03082020.git/
  
 ## Pour lancer le serveur Nodejs 
 Executez ces lignes dans le terminal:
 
-      - cd backend/
-      - npm install
-      - npm start
+      cd backend/
+      npm install
+      npm start
   
  ## Pour lancer le projet frontend 
  Executez ces lignes dans le terminal:
  
-      - cd frontend/
-      - npm install
-      - npm start
+      cd frontend/
+      npm install
+      npm start
       
 Ensuite allez sur l'url
     
-      -http://localhost:4200
+      http://localhost:4200
  
  ## Technique utilise:
  Cette api est développé sur NODEJS en utilisant ExpressJS.
@@ -77,11 +77,11 @@ Ensuite allez sur l'url
         > message: string
  
  #### la doc:
-    - https://s3-eu-west-1.amazonaws.com/course.oc-static.com/projects/DWJ_FR_P6/Guidelines+API.pdf
+      https://s3-eu-west-1.amazonaws.com/course.oc-static.com/projects/DWJ_FR_P6/Guidelines+API.pdf
  #### note de cadrage:
-    - https://s3.eu-west-1.amazonaws.com/course.oc-static.com/projects/DWJ_FR_P6/P6_Note%20de%20cadrage%20So%20Pekocko_V3.pdf
+      https://s3.eu-west-1.amazonaws.com/course.oc-static.com/projects/DWJ_FR_P6/P6_Note%20de%20cadrage%20So%20Pekocko_V3.pdf
  #### project backend 
-    - https://github.com/OpenClassrooms-Student-Center/dwj-projet6
+      https://github.com/OpenClassrooms-Student-Center/dwj-projet6
     
     
     

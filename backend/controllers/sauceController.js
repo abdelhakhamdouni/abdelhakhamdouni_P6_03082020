@@ -35,7 +35,7 @@ module.exports = {
                 res.status(200)
                 res.json({message : "sauce ajouté avec succés"})
             }else{
-                res.status(500)
+                res.status(400)
                 res.json({message: "impossible d'ajouter la sauce"  + err})
             }
         })
@@ -48,7 +48,7 @@ module.exports = {
                 res.json(sauce)
             }
             else{
-                console.log(err)
+                res.status(400)
                 res.json({error: err})
             }
         })
@@ -66,7 +66,7 @@ module.exports = {
                     console.log('sauce updated:', sauceUpdated)
                     if(err){
                         console.log(err)
-                        res.status(202)
+                        res.status(400)
                         res.json({err : 'Impossible d\'ajouter la sauce !'})
                     }else{
                         res.status(202)
@@ -129,7 +129,7 @@ module.exports = {
                             res.json({message: 'bdd mise a jour mais l\'image n\'as pas été suprimé !'})
                         })
                     }else{
-                        res.status(403)
+                        res.status(400)
                         res.json({message: 'un probleme ampéche de suprimer la sauce !'})
                     }
             

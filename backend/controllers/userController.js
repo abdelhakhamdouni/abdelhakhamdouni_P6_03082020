@@ -18,7 +18,7 @@ module.exports = {
                 console.log(req.body.email)
                 userShema.findOne({email: req.body.email},(err, user)=>{
                     if(user == null){
-                        res.status(403)
+                        res.status(401)
                         res.json({error : "utilisateur non trouvé !"})
                         
                     }else{

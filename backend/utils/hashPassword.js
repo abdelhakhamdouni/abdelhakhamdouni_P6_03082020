@@ -15,6 +15,7 @@ module.exports = (req, res, next)=>{
         })
         .catch(err=>{
             console.log(err)
+            res.status(501)
             res.json({
                 message:"problem de hash password"
             })

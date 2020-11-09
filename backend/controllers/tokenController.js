@@ -8,6 +8,7 @@ module.exports = {
                     userId: req.user.id
                 },secretString,(err, token)=>{
                     if(err){
+                        res.status(400)
                         res.json({
                             error: 'erreur lors de la génération du token !'
                         })
@@ -25,7 +26,7 @@ module.exports = {
                             req.userId = decoded.userId
                             next()
                         }else{
-                            res.status(403)
+                            res.status(401)
                             res.json({error: "Vous n'êtes pas authoriser à accéder à cette page !"})
                         }
                     })

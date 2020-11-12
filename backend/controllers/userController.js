@@ -3,7 +3,7 @@ const userShema = require('../config/userShema')
 
 module.exports = {
     signup : (req, res)=>{
-                    let email = req.body.email
+                    let email =  req.body.email.toLowerCase()
                     let password = req.body.password
                         userShema.create({email, password}).then(()=>{
                             res.status(201)
@@ -15,8 +15,7 @@ module.exports = {
                         })
                     },
     signin: (req, res, next)=>{
-                console.log(req.body.email)
-                userShema.findOne({email: req.body.email},(err, user)=>{
+                userShema.findOne({email: req.body.email.toLowerCase()},(err, user)=>{
                     if(user == null){
                         res.status(401)
                         res.json({error : "utilisateur non trouvé !"})

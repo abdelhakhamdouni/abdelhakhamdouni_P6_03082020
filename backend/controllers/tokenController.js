@@ -25,7 +25,7 @@ module.exports = {
                         if(!err){
                             req.userId = decoded.userId
                             next()
-                        }else{
+                        }else{cd  
                             res.status(401)
                             res.json({error: "Vous n'êtes pas authoriser à accéder à cette page !"})
                         }

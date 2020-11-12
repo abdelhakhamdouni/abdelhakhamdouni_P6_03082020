@@ -11,12 +11,16 @@ module.exports = {
             res.json({erreur: "l'email entré non valide !"})
         }
     },
+    /**
+     * le mot de passe doit contenir entre 8 et 15 caracteres, 
+     * contien une majuscule, une minuscule et un symbole
+     */
     password : (req, res, next)=>{
         let mdp_regex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[-+!*$@%_])([-+!*$@%_\w]{8,15})$/
         let mdp = req.body.password
         if(mdp.length < 8){
             res.status(400)
-            res.json({erreur: "Votre mot de passe doit contenir 8 caractères au minimum !"})
+            res.json({erreur: "Votre mot de passe doit contenir 8 caractères au minimum, une majuscule et un caractere !"})
         }
         else{
             if(!mdp.match(mdp_regex)){

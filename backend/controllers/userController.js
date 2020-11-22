@@ -38,11 +38,15 @@ module.exports = {
                 res.json({ error: "utilisateur non trouvé !" })
             } else {
                 bcrypt.compare(req.body.password, user.password, (err, resultat) => {
-                    if (err) {
+                    console.log(resultat)
+                    if (!resultat) {
+                        res.status(403)
                         res.json({ error: err })
+                    }else{
+
+                        req.user = user
+                        next()
                     }
-                    req.user = user
-                    next()
                 })
             }
         })

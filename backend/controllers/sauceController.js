@@ -9,6 +9,9 @@ const unlinkAsync = promisify(fs.unlink)
 
 module.exports = {
 
+    /**
+     * Recupérer l'ensambre des sauce dans la BDD
+     */
     getAllSauces : (req, res, next )=>{
         sauceShema.find((err, sauces)=>{
             if(sauces){
@@ -16,6 +19,12 @@ module.exports = {
             }
         })
     },
+    
+    /**
+     * ajouter une sauce
+     * @param {Object} json de la sauce dans le body
+     * @param {File} image
+     */
     addSauce : (req, res, next)=>{
         let sauce = new sauceShema()
         req.body.sauce = JSON.parse(req.body.sauce)
@@ -36,10 +45,16 @@ module.exports = {
                 res.json({message : "sauce ajouté avec succés"})
             }else{
                 res.status(400)
-                res.json({message: "impossible d'ajouter la sauce"  + err})
+                let er = new Error("impossible d'ajouter la sauce")
+                res.json({err, er})
             }
         })
     },
+
+    /**
+     * recupérer une sauce par son ID
+     * @param {Number} id dans l'url
+     */
     getSauceById : (req, res, next)=>{
         let sauceId = req.params.id
         sauceShema.findById(sauceId, (err, sauce)=>{
@@ -53,6 +68,12 @@ module.exports = {
             }
         })
     },
+
+    /**
+     * editer une sauce
+     * @param {Object} json de la sauce dans le body
+     * @param {File} image
+     */
     editSauce : (req, res, next)=>{
         if(req.body.sauce == undefined){
             sauceShema.findById(req.params.id, (err, sauce)=>{
@@ -61,13 +82,11 @@ module.exports = {
                 sauce.description= req.body.description
                 sauce.mainPepper= req.body.mainPepper
                 sauce.heat= req.body.heat
-                
                 sauce.save((err, sauceUpdated)=>{
-                    console.log('sauce updated:', sauceUpdated)
                     if(err){
-                        console.log(err)
                         res.status(400)
-                        res.json({err : 'Impossible d\'ajouter la sauce !'})
+                        let er = new Error('Impossible d\'ajouter la sauce !')
+                        res.json({er, err})
                     }else{
                         res.status(202)
                         res.json({message: "sauce mise ajoour avec succés"})
@@ -80,9 +99,7 @@ module.exports = {
                 sauceImgUrl = sauceImageUrl.pathname
 
                 sauce_ = JSON.parse(req.body.sauce)
-                console.log(sauce)
                 let fileName = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-        
                 sauce.name =            sauce_.name
                 sauce.manufactruer =    sauce_.manufacturer
                 sauce.description =     sauce_.description
@@ -90,26 +107,31 @@ module.exports = {
                 sauce.imageUrl =        fileName
                 sauce.heat =            sauce_.heat
                 sauce.save( (err, sauce)=>{
-                    
                     if(sauce){
                         unlinkAsync(path.join('../backend/', sauceImgUrl)).then(()=>{
                             res.status(200)
                             res.json({message : "sauce mise a jour avec succés"})
                         })
                         .then(err => {
-                            console.log(err)
                             res.status(400)
-                            res.json({message: 'bdd mise a jour mais l\'image n\'as pas été suprimé !'})
+                            let er = new Error('bdd mise a jour mais l\'image n\'as pas été suprimé !' )
+                            res.json({err, er})
                         })
                     }else{
                         res.status(500)
-                        res.json({message: "impossible d'ajouter la sauce"  + err})
+                        let er = new Error("impossible d'ajouter la sauce")
+                        res.json({er, err})
                     }
                 })
             })
         }
        
     },
+
+    /**
+     * Supprimer une sauce 
+     * @param {Number} id de la sauce
+     */
     deleteSauce:  (req, res, next)=>{
         let id = req.params.id
         let sauceImgUrl = ""
@@ -124,70 +146,70 @@ module.exports = {
                             res.json({message: 'sauce suprimé de la base de donnée !'})
                         })
                         .then(err => {
-                            console.log(err)
                             res.status(400)
-                            res.json({message: 'bdd mise a jour mais l\'image n\'as pas été suprimé !'})
+                            let er = new Error('bdd mise a jour mais l\'image n\'as pas été suprimé !')
+                            res.json({err, er})
                         })
                     }else{
                         res.status(400)
-                        res.json({message: 'un probleme ampéche de suprimer la sauce !'})
+                        let er = new Error('un probleme ampéche de suprimer la sauce !')
+                        res.json({er, err})
                     }
             
                 })
             }else{
                 res.status(500)
-                res.json({error: "impossible de trouver la sauce à supprimer !"})
+                let er = new Error("impossible de trouver la sauce à supprimer !")
+                res.json({err, er})
             }
         })
             
-    },
-    likeSauce: (req, res, next)=>{
-        let id = req.params.id
-        let like = req.body.like
+        },
+        likeSauce: (req, res, next)=>{
+            let id = req.params.id
+            let like = req.body.like
 
-        sauceShema.findById(id,(err, sauce)=>{
-            console.log(sauce)
-            if(!err){
-                switch (like){
-                    case 1:
-                        if(sauce.usersLiked.indexOf(req.body.userId) != -1 ){
-                            res.status(200)
-                            res.json({message: 'vous avez déja aimé cette sauce'})
-                        }else{
-                            sauce.likes += req.body.like
-                            sauce.usersLiked.push(req.body.userId)
+            sauceShema.findById(id,(err, sauce)=>{
+                if(!err){
+                    switch (like){
+                        case 1:
+                            if(sauce.usersLiked.indexOf(req.body.userId) != -1 ){
+                                res.status(200)
+                                res.json({message: 'vous avez déja aimé cette sauce'})
+                            }else{
+                                sauce.likes += req.body.like
+                                sauce.usersLiked.push(req.body.userId)
+                                sauce.usersDisliked = sauce.usersDisliked.filter(userId => userId != req.body.userId)
+                            }
+                        break
+                        case 0:
+                            if(sauce.usersLiked.indexOf(req.body.userId) != -1 ){
+                                sauce.likes -= 1
+                            }
+                            if(sauce.usersDisliked.indexOf(req.body.userId) != -1 ){
+                                sauce.dislikes -= 1
+                            }
                             sauce.usersDisliked = sauce.usersDisliked.filter(userId => userId != req.body.userId)
-                        }
-                    break
-                    case 0:
-                        if(sauce.usersLiked.indexOf(req.body.userId) != -1 ){
-                            sauce.likes -= 1
-                        }
-                        if(sauce.usersDisliked.indexOf(req.body.userId) != -1 ){
-                            sauce.dislikes -= 1
-                        }
-                        sauce.usersDisliked = sauce.usersDisliked.filter(userId => userId != req.body.userId)
-                        sauce.usersLiked = sauce.usersLiked.filter(userId => userId != req.body.userId)
-                    break
-                    case -1:
-                        if(sauce.usersDisliked.indexOf(req.body.userId) != -1 ){
-                            res.status(200)
-                            res.json({message: 'vous avez déja aimé cette sauce'})
-                        }else{
-                            sauce.dislikes += 1
-                            sauce.usersDisliked.push(req.body.userId)
                             sauce.usersLiked = sauce.usersLiked.filter(userId => userId != req.body.userId)
-                        }
-                    break
-                }
-                sauce.save((err, sauce)=>{
-                    if(!err){
-                        res.status(200)
-                        res.json({message: 'vous avez aimé cette sauce'})
+                        break
+                        case -1:
+                            if(sauce.usersDisliked.indexOf(req.body.userId) != -1 ){
+                                res.status(200)
+                                res.json({message: 'vous avez déja aimé cette sauce'})
+                            }else{
+                                sauce.dislikes += 1
+                                sauce.usersDisliked.push(req.body.userId)
+                                sauce.usersLiked = sauce.usersLiked.filter(userId => userId != req.body.userId)
+                            }
+                        break
                     }
-                })
-            }
-        })
-    },
-    dislikeSauce: (req, res, next)=>{}
+                    sauce.save((err, sauce)=>{
+                        if(!err){
+                            res.status(200)
+                            res.json({message: 'vous avez aimé cette sauce'})
+                        }
+                    })
+                }
+            })
+        }
 }
